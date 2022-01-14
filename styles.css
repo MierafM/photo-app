@@ -1,0 +1,322 @@
+body{
+    background-color: #ededed;
+    margin: 0px;
+}
+
+#headerBar{
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    position: fixed;
+    width: -webkit-fill-available;
+    margin: 0px;
+    overflow: hidden;
+    
+    
+}
+#title{
+    font-size: 3vh;
+    margin: 0px;
+    font-family: 'Comfortaa', cursive;
+}
+#signOutBtn{
+    background-color: white;
+    color:#1B5499;
+    border: none;
+}
+#mainContent{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    height: 100%;
+    margin-right: 20%;
+    
+    
+}
+
+#recPanel{
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0% 2%;
+    height: 60%;
+    width: 20%;
+    margin-top: 12vh;
+    position: fixed;
+    display: flex;
+    position: fixed;
+    right: 12%;
+
+
+}
+#userSection{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-bottom: 5%;
+    
+    
+}
+#userImg{
+    border-radius: 50%;
+    height: 10vh;
+    
+    
+}
+#userNameRec{
+    font-size: 3vw;
+    padding-left: 2vw;
+    font-family: 'Comfortaa', cursive;
+    margin: 0;
+}
+#suggestionSection{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+    height: 100%;
+    
+
+}
+#suggestedUsers{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    height: 100%;
+    justify-content: space-evenly;
+    
+
+}
+.suggestedProfile{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.suggestedProfilePic{
+    border-radius: 50%;
+    height: 7vh;
+    padding: 5%;
+}
+.suggestionText{
+    display: flex;
+    flex-flow: column nowrap;
+}
+.suggestedName{
+    color: black;
+    font-size: 3vh;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+.sFU{
+    color: gray;
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+.followBtn{
+    background-color: inherit;
+    color:#1B5499;
+    border: none;
+    margin: 0;
+    padding: 5%;
+    font-size: 2vh;
+
+}
+
+#suggestionTitle{
+    margin: 0;
+    font-size: 2.5vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #4E4E4E;
+}
+
+
+
+
+#following{
+    width:55%;
+    display: flex;
+    flex-flow: column nowrap;
+    margin-top: 12vh;
+    
+
+}
+#storiesPanel{
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: white;
+    padding:2%;
+    justify-content: start;
+    
+}
+.story{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: start;
+    padding-right:3%;
+    width: 12%;
+}
+.storyimg{
+    border-radius: 50%;
+    border: lightgray solid 2px;
+    padding: 1%;
+    width:100%;
+}
+.storyName{
+    font-size: 80%;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5%;
+}
+
+#posts{
+    display: flex;
+    flex-flow: column nowrap;
+}
+.card{
+    background-color: white;
+    border: lightgray solid 1px;
+    margin:3% 0;
+    display: flex;
+    flex-flow: column nowrap;
+}
+.cardHeader{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3% 2%;
+}
+.cardName{
+    font-size: 3vh;
+    font-family: 'Comfortaa', cursive;
+    margin: 0px;
+    
+}
+
+.cardBody{
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 1% 2%;
+
+}
+.interactionLinks{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding: 2% 0;
+    
+}
+.mainIcons{
+    display: flex;
+    flex-flow: row nowrap;
+    
+}
+.mainIcons .far{
+    padding-right: 20%;
+}
+.likeSec{
+    display: flex;
+    justify-content: start;
+
+}
+.likeText{
+    font-weight: bold;
+    font-size:2.4vh;
+    padding: 2% 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.caption{
+    display: inline-block;
+    
+}
+.createrName{
+    font-weight: bold;
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.picCaption{
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.moreBtn{
+    background-color: inherit;
+    border: none;
+    color:#1B5499;
+    font-size: 2vh;
+    
+}
+.commentsSec{
+    display: flex;
+    flex-flow: column nowrap;
+}
+.comment{
+    display: inline-block;
+}
+.commenterName{
+    font-weight: bold;
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.commentText{
+    font-size: 2vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.commentDate{
+    display: flex;
+    padding: 1% 0;
+}
+.commentDateText{
+    color:lightgray;
+    font-size: 1.5vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.userComment{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2% 1% 2% 0;
+    border-top: lightgray solid 1px
+}
+.postCommentSec{
+    padding: 0 2%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: 70%;
+    
+}
+.postCommentSec .far{
+    padding-right: 3%;
+    
+}
+.commentInput{
+    width: 100%;
+    border: none;
+}
+.commentInput:focus{
+    outline: none;
+}
+.postBtn{
+    background-color: inherit;
+    color:#1B5499;
+    border: none;
+}
+
+@media (max-width: 767px) {
+    #recPanel{
+        display: none;
+    }
+    #following{
+        width: 95%;
+    }
+    #mainContent{
+        margin: 0px;
+    }
+    .story{
+        width: 9%;
+    }
+}
