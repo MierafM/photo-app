@@ -1,0 +1,28 @@
+<aside id='recPanel'>
+    <section id='userSection'>
+        <img id='userImg' src={{ user.get('profile_url') }} alt="user's profile picture">
+        <h2 id='userNameRec'>{{ user.get('username') }}</h2>
+    </section>
+    <section id='suggestionSection'>
+        <h2 id='suggestionTitle'>Suggestions for you</h2>
+        <section id='suggestedUsers'>
+            {% for suggestion in suggestions %}
+            <section class=suggestedProfile>
+                
+                {% set alt_text = suggestion.get('username')  %}
+                <img class='suggestedProfilePic' src={{ suggestion.get('profile_url') }} alt="{{alt_text}}'s profile picture">
+                <section class=suggestionText>
+                    <span class='suggestedName'>{{ suggestion.get('username') }}</span>
+                    <span class='sFU'>suggested for you</span>
+                </section>
+                <button class='followBtn'>Follow</button>
+            </section>
+            {% endfor%}
+
+            
+        </section>
+        
+
+    </section>
+
+</aside>

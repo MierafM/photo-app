@@ -1,0 +1,65 @@
+<section id='posts'>
+    {% for post in posts %}
+    <section class='card'> 
+                    
+        <section class='cardHeader'>
+            <h2 class='cardName'>{{ post.user.get('username') }}</h2>
+            
+            <i class="fas fa-ellipsis-h"></i>
+        </section>
+        {% set alt_text = post.user.get('username')  %}
+        <img id='cardImg' src={{ post.get('image_url') }} alt="image posted by {{alt_text}}">
+        <section class='cardbody'>
+            <section class='interactionLinks'>
+                <section class='mainIcons'>
+                    <i class="far fa-heart"></i>
+                    <i class="far fa-comment"></i>
+                    <i class="far fa-paper-plane"></i>
+                </section>
+                <i class="far fa-bookmark"></i>
+
+            </section>
+            <section class='likeSec'>
+                <span class='likeText'><b>{{ post.get('likes')}} likes</b></span>
+            </section>
+            <section class='caption'>
+                <span class='createrName'>{{ post.user.get('username') }}</span>
+                <span class="picCaption"> {{ post.get('title')}} </span>
+                <button class='moreBtn'>more</button>
+            </section>
+            <section class='commentsSec'>
+                
+                {% if post.comments|length > 1 %}
+                    <span class='commentsLen'>view all {{post.comments|length}} comments</span>
+                    <section class='comment'>
+                        <span class='commenterName'>{{ post.comments[0].user.get('username')}}</span>
+                        <span class='commentText'>{{ post.comments[0].get('text')}}</span>
+                    </section>
+                   
+                {% elif post.comments|length == 1 %}
+                    <section class='comment'>
+                        <span class='commenterName'>{{ post.comments[0].user.get('username')}}</span>
+                        <span class='commentText'>{{ post.comments[0].get('text')}}</span>
+                    </section>
+                    
+                {% endif %}
+                <section class='commentDate'> <!--should this be date of comment posted or the day the post was posted-->
+                    <span class='commentDateText'> {{ post.get('display_time')}}</span>
+                </section>
+                
+                
+            </section>
+            
+        </section>
+        <section class='userComment'>
+            <section class="postCommentSec">
+                <i class="far fa-smile"></i>
+                
+                <input class='commentInput' aria-label="comment input" type="text" placeholder="Add a comment...">
+            </section>
+            <button class='postBtn'>Post</button>
+        </section>
+
+    </section>
+    {% endfor%}
+</section>

@@ -1,0 +1,10 @@
+<section id='storiesPanel'>
+    {% for story in stories %}
+    <section class='story'>
+        {% set alt_text = story.user.get('username')  %}
+        <img class='storyimg' src={{ story.user.get('profile_url') }} alt="story of {{alt_text}}"> <!--currently holding users profile pic, cant find story thumbnail-->
+        <span class='storyName'>{{ story.user.get('username') }}</span>
+    </section>
+    {% endfor%}
+
+</section>
