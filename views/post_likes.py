@@ -37,20 +37,23 @@ class PostLikesDetailEndpoint(Resource):
     
     def delete(self, post_id, id):
         # Your code here
+        print('given (postid, id)', post_id, id)
         if id.isnumeric() != True or post_id.isnumeric() != True:
             return Response(json.dumps({'message': 'Invalid Request'}), mimetype="application/json", status=400)
-        likepost = LikePost.query.get(id)
-        if not likepost or likepost.user_id != self.current_user.id:
+        likepost = LikePost.query.filter_by(post_id=post_id, user_id=id)
+        print(likepost)
+        if not likepost or can_view_post(post_id, self.current_user)== False:
+            # print('likepost:', likepost, ' curr user', self.current_user.id, ' likepost (id, user_id, post_id):', likepost.id, likepost.user_id, likepost.post_id)
             return Response(json.dumps({'message': 'like post does not exist'}), mimetype="application/json", status=404)
        
         
         db.session.commit()
         
         if can_view_post(post_id, self.current_user):
-            LikePost.query.filter_by(id=id).delete()
+            LikePost.query.filter_by(post_id=post_id, user_id=id).delete()
             db.session.commit()
             serialized_data = {
-            'message': 'Like Post {0} successfully deleted.'.format(id)
+            'message': 'Like Post {0} successfully deleted.'.format(post_id)
             }
             return Response(json.dumps(serialized_data), mimetype="application/json", status=200)
         else:

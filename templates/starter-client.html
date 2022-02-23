@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Photo App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+
+    <!-- client-side scripts -->
+    <script lang="text/javascript" src="/static/js/hw04.js" defer></script>
+</head>
+<body>
+    <!-- Nav Bar still rendered via server-side template -->
+    {% include 'includes/navbar.html'  %}
+    <main id="mainContent">
+
+        <section id="following">
+            <!-- stories -->
+            <section id="storiesPanel" ></section>
+            <!-- Posts -->
+            <section id="posts"></section>
+        </section>
+        <!-- suggestions -->
+        <aside id="recPanel">
+            <section id="userSection">
+                <!-- user profile rendered client-side -->
+            </section>
+            <section class="suggestionSection">
+                <h2 id='suggestionTitle'>Suggestions for you</h2>
+                <section id='suggestedUsers'>
+                    <!-- Suggestions rendered client-side -->
+                    <p>TBD</p>
+                </section>
+            </section>
+        </aside>
+       
+
+    </main>
+    <section class="modalContainer"></section>
+
+    
+
+    
+
+</body>
+</html>
