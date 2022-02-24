@@ -1,6 +1,6 @@
-<nav class="main-nav">
-    <h1>Photo App</h1>
-    <ul>
+<header id='navBar'>
+    <h1 id='title'> Photo App</h1>
+    <ul id="navList">
         {% if user %}
             <li>
                 {% if request.url_rule.endpoint == 'api_docs' %}
@@ -9,8 +9,8 @@
                     <a href="/api">API Docs</a>
                 {% endif %}
             </li>
-            <li><span>{{ user.username }}</span></li>
-            <li><a href="/logout">Sign out</a></li>
+            <li><span id='loggedInUser'>{{ user.username }}</span></li>
+            <li><a id='signOutBtn' href="/logout">Sign out</a></li>
         {% endif %}
     </ul>
-</nav>
+</header>
