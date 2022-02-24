@@ -27,7 +27,8 @@ class BookmarksListEndpoint(Resource):
            
             return Response(json.dumps({'message': 'post_id required to post'}), mimetype="application/json", status=400)
         post_id = body.get('post_id')
-        if not post_id or type(post_id) != int:
+        print('given post id for bookmark', post_id, post_id.isnumeric())
+        if not post_id or post_id.isnumeric() != True:
             
             return Response(json.dumps({'message': 'valid post_id required to post'}), mimetype="application/json", status=400)
         
@@ -58,14 +59,16 @@ class BookmarkDetailEndpoint(Resource):
         # Your code here
         if id.isnumeric() != True:
             return Response(json.dumps({'message': 'Invalid Request'}), mimetype="application/json", status=400)
-        bookmark = Bookmark.query.get(id)
+        print('given id to bookmark', id)
+        bookmark = Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()[0]
+        print('bookmark', bookmark)
         if not bookmark or bookmark.user_id != self.current_user.id:
             return Response(json.dumps({'message': 'bookmark does not exist'}), mimetype="application/json", status=404)
-       
-        Bookmark.query.filter_by(id=id).delete()
+        print("deleted bookmark ", Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()[0])
+        Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).delete()
         db.session.commit()
         serialized_data = {
-            'message': 'Bookmark {0} successfully deleted.'.format(id)
+            'message': 'Bookmark on post {0} successfully deleted.'.format(id)
         }
         return Response(json.dumps(serialized_data), mimetype="application/json", status=200)
 

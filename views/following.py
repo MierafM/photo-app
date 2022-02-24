@@ -60,8 +60,11 @@ class FollowingDetailEndpoint(Resource):
         if id.isnumeric() != True:
             return Response(json.dumps({'message': 'Invalid Request'}), mimetype="application/json", status=400)
         following = Following.query.get(id)
-        if not following or following.user_id != self.current_user.id:
-            return Response(json.dumps({'message': 'bookmark does not exist'}), mimetype="application/json", status=404)
+        # print('given id', id, "current user", self.current_user.id)
+        # print("following whole: ", following, "values (id, user_id, following_id, follower, following_id): ", following.id, following.user_id, following.following_id, following.follower, following.following)
+        if not following:
+            
+            return Response(json.dumps({'message': 'Follower does not exist'}), mimetype="application/json", status=404)
        
         Following.query.filter_by(id=id).delete()
         db.session.commit()
