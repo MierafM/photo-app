@@ -156,7 +156,7 @@ if __name__ == '__main__':
         TestBookmarkListEndpoint('test_bookmark_post_unauthorized_post_id_404'),
         TestBookmarkListEndpoint('test_bookmark_post_missing_post_id_400'),  
 
-        # # DELETE Tests
+        # DELETE Tests
         TestBookmarkDetailEndpoint('test_bookmark_delete_valid_200'),
         TestBookmarkDetailEndpoint('test_bookmark_delete_invalid_id_format_400'),
         TestBookmarkDetailEndpoint('test_bookmark_delete_invalid_id_404'),

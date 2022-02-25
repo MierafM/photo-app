@@ -20,15 +20,15 @@ class BookmarksListEndpoint(Resource):
         return Response(json.dumps(bookmarks_list_of_dictionaries), mimetype="application/json", status=200)
     
     def post(self):
-
+        print('in post')
         body = request.get_json()
         
         if body == None:
            
             return Response(json.dumps({'message': 'post_id required to post'}), mimetype="application/json", status=400)
         post_id = body.get('post_id')
-        print('given post id for bookmark', post_id, post_id.isnumeric())
-        if not post_id or post_id.isnumeric() != True:
+        
+        if not post_id or type(post_id) != int:
             
             return Response(json.dumps({'message': 'valid post_id required to post'}), mimetype="application/json", status=400)
         
@@ -60,11 +60,11 @@ class BookmarkDetailEndpoint(Resource):
         if id.isnumeric() != True:
             return Response(json.dumps({'message': 'Invalid Request'}), mimetype="application/json", status=400)
         print('given id to bookmark', id)
-        bookmark = Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()[0]
+        bookmark = Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()
         print('bookmark', bookmark)
         if not bookmark or bookmark.user_id != self.current_user.id:
             return Response(json.dumps({'message': 'bookmark does not exist'}), mimetype="application/json", status=404)
-        print("deleted bookmark ", Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()[0])
+        # print("deleted bookmark ", Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).all()[0])
         Bookmark.query.filter_by(post_id=id, user_id=self.current_user.id).delete()
         db.session.commit()
         serialized_data = {
