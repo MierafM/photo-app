@@ -3,12 +3,15 @@ from flask_restful import Resource
 from models import Story
 from . import get_authorized_user_ids
 import json
-
+import decorators
+import flask_jwt_extended
+from flask_jwt_extended import jwt_required
 class StoriesListEndpoint(Resource):
 
     def __init__(self, current_user):
         self.current_user = current_user
-    
+
+    @jwt_required()
     def get(self):
         # Your code here:
         data = Story.query.filter(Story.user_id.in_(get_authorized_user_ids(self.current_user))).all()
@@ -26,5 +29,5 @@ def initialize_routes(api):
         StoriesListEndpoint, 
         '/api/stories', 
         '/api/stories/', 
-        resource_class_kwargs={'current_user': api.app.current_user}
+        resource_class_kwargs={'current_user': flask_jwt_extended.current_user}
     )

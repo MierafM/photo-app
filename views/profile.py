@@ -2,7 +2,9 @@ from flask import Response, request
 from flask_restful import Resource
 from models import User
 import json
-
+import decorators
+import flask_jwt_extended
+from flask_jwt_extended import jwt_required
 def get_path():
     return request.host_url + 'api/posts/'
 
@@ -10,7 +12,7 @@ class ProfileDetailEndpoint(Resource):
 
     def __init__(self, current_user):
         self.current_user = current_user
-
+    @jwt_required()
     def get(self):
         # Your code here:
         data = User.query.filter_by(id=self.current_user.id).all()
@@ -27,5 +29,5 @@ def initialize_routes(api):
         ProfileDetailEndpoint, 
         '/api/profile', 
         '/api/profile/', 
-        resource_class_kwargs={'current_user': api.app.current_user}
+        resource_class_kwargs={'current_user': flask_jwt_extended.current_user}
     )

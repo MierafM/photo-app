@@ -9,9 +9,20 @@ from models import db, User, ApiNavigator
 from views import bookmarks, comments, followers, following, \
     posts, profile, stories, suggestions, post_likes
 
+# new import statements:
+import flask_jwt_extended  
 
+import decorators
+import datetime
+
+# new views:
+from views import authentication, token
 
 app = Flask(__name__)
+
+
+
+
 
 # CORS: allows anyone from anywhere to use your API:
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -25,7 +36,8 @@ api = Api(app)
 
 # set logged in user
 with app.app_context():
-    app.current_user = User.query.filter_by(id=12).one()
+    # print(user_lookup_callback)
+    app.current_user = flask_jwt_extended.current_user
 
 
 # Initialize routes for all of your API endpoints:
@@ -40,25 +52,48 @@ stories.initialize_routes(api)
 suggestions.initialize_routes(api)
 
 
+
 # Server-side template for the homepage:
 @app.route('/')
+@decorators.jwt_or_login
 def home():
     return render_template(
         'starter-client.html', 
-        user=app.current_user
+        user=flask_jwt_extended.current_user
     )
 
 @app.route('/api')
+@decorators.jwt_or_login
 def api_docs():
     navigator = ApiNavigator(app.current_user)
     return render_template(
         'api/api-docs.html', 
-        user=app.current_user,
+        user=flask_jwt_extended.current_user,
         endpoints=navigator.get_endpoints(),
         url_root=request.url_root[0:-1] # trim trailing slash
     )
 
 
+#JWT config variables and manager (add after app object created):
+app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')
+app.config["JWT_ACESS_TOKEN_EXPIRES"] = datetime.timedelta(seconds=10)
+app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
+app.config["JWT_COOKIE_SECURE"] = False
+jwt = flask_jwt_extended.JWTManager(app)
+
+
+
+# defines the function for retrieving a user from the database
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    print('JWT data:', jwt_data)
+    # https://flask-jwt-extended.readthedocs.io/en/stable/automatic_user_loading/
+    user_id = jwt_data["sub"]
+    return User.query.filter_by(id=user_id).one_or_none()
+
+# Initialize routes of 2 new views
+authentication.initialize_routes(app)
+token.initialize_routes(api)
 
 # enables flask app to run using "python3 app.py"
 if __name__ == '__main__':

@@ -1,3 +1,21 @@
+const getCookie = key => {
+    let name = key + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+};
+
+
+
 // stories////////////////////////////////////////
 const story2Html = story => {
     return `
@@ -8,11 +26,11 @@ const story2Html = story => {
     `;
 };
 
-// fetch data from your API endpoint:
+// fetch data from your API endpoint: //get
 const displayStories = () => {
     fetch('/api/stories')
-        .then(response => response.json())
-        .then(stories => {
+    .then(response => response.json())
+    .then(stories => {
             const html = stories.map(story2Html).join('\n');
             document.querySelector('#storiesPanel').innerHTML = html;
         })
@@ -116,13 +134,20 @@ const addComment = (postId) =>{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token')
             },
             body: JSON.stringify(postData)
         }).then(response => response.json()).then(data => {
             console.log(data);
         });
     
-    fetch("/api/posts/"+postId).then(res => res.json()).then(post =>{
+    fetch("/api/posts/"+postId, {
+        method: "GET",
+        headers: {
+            
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')
+        }
+    }).then(res => res.json()).then(post =>{
         console.log(post)
         document.querySelector("#commentsOf"+postId).innerHTML = displayComments(post.comments, postId)
     })
@@ -134,7 +159,12 @@ const showPostDetail = ev =>{
     const postId = ev.currentTarget.dataset.postId
     
     
-    fetch("/api/posts/"+postId).then(res => res.json()).then(post =>{
+    fetch("/api/posts/"+postId , {
+        method: "GET",
+        headers: {
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')   
+        }
+    }).then(res => res.json()).then(post =>{
         console.log(post)
         const html = `
                 <section class="modalInside">
@@ -156,7 +186,7 @@ const showPostDetail = ev =>{
         `
         document.querySelector('.modalContainer').innerHTML = html;
 
-        displayModalUser()
+        displayModalUser(postId)
         displayModalComments(post)
         
         
@@ -184,26 +214,38 @@ const destroyModal = ev =>{
 
 }
 
-const displayModalUser = () => {
-    fetch("/api/profile/", {
+const displayModalUser = (id) => {
+    fetch("/api/posts/"+id, {
         method: "GET",
         headers: {
-            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')   
         }
-    }).then(response => response.json()).then(currUser => {
-        console.log(currUser);
+    }).then(response => response.json()).then(post => {
+        console.log(post);
         let html = `
-        <img class='modalUserImg' src="${ currUser.thumb_url }"  alt="profile pic for ${ currUser.username }" />
-        <span class="modalUserName"> ${currUser.username}</span>
+        <img class='modalUserImg' src="${ post.user.thumb_url }"  alt="profile pic for ${ post.user.username }" />
+        <span class="modalUserName"> ${post.user.username}</span>
         `
         
         document.querySelector('.userSec').innerHTML = html
+        let html2 = `
+        <section class="modalCommentWrap">
+            <img id='modalCommenterImg' src="${ post.user.thumb_url }" alt="image posted by ${ post.user.username }">
+            <section class='modalComment'>
+                <span class="modalCommenterName"><strong>${post.user.username}</strong></span>
+                <span class="modalCommentText">${post.caption}</span><br>
+                <span class="modalCommentDate"><strong>${post.display_time}</strong></span>
+            </section>
+            <i class="fa${ post.id.current_user_like_id ? 's' : 'r' } fa-heart"></i>
+        </section>`
+        document.querySelector(".mCommentSec").insertAdjacentHTML('afterbegin', html2)
+
     })
 
 }
 const displayModalComments = (post) =>{
     const html = post.comments.map(comments2Html).join('\n');
-    document.querySelector(".mCommentSec").innerHTML = html
+    document.querySelector(".mCommentSec").innerHTML += html
 
 
 
@@ -224,7 +266,14 @@ const comments2Html = (comment) => {
 
 }
 const displayPosts = () =>{
-    fetch('/api/posts').then(res => res.json()).then(posts =>{
+    console.log('cookie:', getCookie('csrf_access_token'))
+    fetch('/api/posts', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')  
+        }
+    }).then(res => res.json()).then(posts =>{
 
         const html = posts.map(post2HTML).join('\n');
         document.querySelector('#posts').innerHTML = html
@@ -235,7 +284,13 @@ const displayPosts = () =>{
 ///display aside
 
 const displayRecs = () =>{
-    fetch('/api/suggestions').then(res => res.json()).then(suggestions => {
+    fetch('/api/suggestions', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')
+        }
+    }).then(res => res.json()).then(suggestions => {
         console.log( suggestions)
         const html = suggestions.map(sugg2Html).join('\n')
         document.querySelector("#suggestedUsers").innerHTML = html
@@ -282,6 +337,7 @@ const addFollower = (userId, elem) =>{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token')
             },
             body: JSON.stringify(postData)
         })
@@ -298,11 +354,12 @@ const addFollower = (userId, elem) =>{
 
 }
 const deleteFollower = (followerId, elem) =>{
-    
+    console.log('followeer id', followerId)
     fetch("http://localhost:5000/api/following/"+followerId, {
         method: "DELETE",
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')
         }
     })
     .then(response => response.json())
@@ -322,6 +379,7 @@ const displayUser  = () =>{
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')
         }
     })
     .then(response => response.json())
@@ -351,6 +409,7 @@ const likeUnlike = ev =>{
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token')
             }
         })
         .then(response => response.json())
@@ -360,6 +419,7 @@ const likeUnlike = ev =>{
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCookie('csrf_access_token')
                 },
             
             })
@@ -383,6 +443,7 @@ const likeUnlike = ev =>{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token')
             },
         
         })
@@ -403,7 +464,13 @@ const likeUnlike = ev =>{
 }
 const updateLikes = (post) =>{
     
-    fetch("/api/posts/"+post).then(res => res.json()).then(post =>{
+    fetch("/api/posts/"+post, {
+        method: "GET",
+        headers: {
+            
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')  
+        }
+    }).then(res => res.json()).then(post =>{
         console.log(post)
         document.querySelector('.likeSec'+post.id).innerHTML = `<span class='likeText'><b>${ post.likes.length } like${post.likes.length != 1 ? 's' : ''}</b></span>`
         
@@ -418,11 +485,12 @@ const toggleBookmark = (ev) =>{
         const postData = {
             "post_id": elem.dataset.postid
         };
-        
+        console.log("sending", JSON.stringify(postData))
         fetch("/api/bookmarks/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token')  
             },
             body: JSON.stringify(postData)
         }).then(response => response.json()).then(data => {
@@ -442,6 +510,7 @@ const toggleBookmark = (ev) =>{
         method: "DELETE",
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token')  
         }
         }).then(response => response.json()).then(data => {
             console.log(data);
@@ -456,6 +525,7 @@ const toggleBookmark = (ev) =>{
         });
     }
 }
+
 
 const initPage = () => {
     displayStories();

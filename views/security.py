@@ -17,7 +17,7 @@ def _id_is_valid(self, func, key, *args, **kwargs):
     try:
         body = request.get_json()
         # if int parse is successful, then id is valid it:
-        # print(key, args, kwargs)
+        print("~~~~~~~~~~body", body, key, args, kwargs)
         int(kwargs.get(key) or body.get(key))
     except:
         return Response(

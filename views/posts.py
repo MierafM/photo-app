@@ -5,7 +5,9 @@ from models import Post, db
 from views import security, get_authorized_user_ids
 
 import json
-
+import decorators
+import flask_jwt_extended
+from flask_jwt_extended import jwt_required
 def get_path():
     return request.host_url + 'api/posts/'
 
@@ -14,6 +16,7 @@ class PostListEndpoint(Resource):
     def __init__(self, current_user):
         self.current_user = current_user
 
+    @jwt_required()
     def get(self):
         ids = get_authorized_user_ids(self.current_user)
         posts = Post.query.filter(Post.user_id.in_(ids))
@@ -35,8 +38,9 @@ class PostListEndpoint(Resource):
             item.to_dict(user=self.current_user) for item in posts.all()
         ]
         return Response(json.dumps(data), mimetype="application/json", status=200)
-
+    @jwt_required()
     def post(self):
+        print('!!!!!!!!!!!!!user', self.current_user)
         body = request.get_json()
         image_url = body.get('image_url')
         if image_url is None:
@@ -56,7 +60,7 @@ class PostDetailEndpoint(Resource):
     def __init__(self, current_user):
         self.current_user = current_user
         
-    
+    @jwt_required()
     @security.id_is_valid
     @security.user_can_edit_post
     def patch(self, id):
@@ -72,7 +76,7 @@ class PostDetailEndpoint(Resource):
         # commit changes:
         db.session.commit()        
         return Response(json.dumps(post.to_dict(user=self.current_user)), mimetype="application/json", status=200)
-    
+    @jwt_required()
     @security.id_is_valid
     @security.user_can_edit_post
     def delete(self, id):
@@ -83,10 +87,11 @@ class PostDetailEndpoint(Resource):
             'message': 'Post {0} successfully deleted.'.format(id)
         }
         return Response(json.dumps(serialized_data), mimetype="application/json", status=200)
-
+    @jwt_required()
     @security.id_is_valid
     @security.user_can_view_post
     def get(self, id):
+        print('bad id:', id)
         post = Post.query.get(id)
         return Response(json.dumps(post.to_dict(user=self.current_user)), mimetype="application/json", status=200)
 
@@ -94,10 +99,10 @@ def initialize_routes(api):
     api.add_resource(
         PostListEndpoint, 
         '/api/posts', '/api/posts/', 
-        resource_class_kwargs={'current_user': api.app.current_user}
+        resource_class_kwargs={'current_user': flask_jwt_extended.current_user}
     )
     api.add_resource(
         PostDetailEndpoint, 
         '/api/posts/<id>', '/api/posts/<id>/',
-        resource_class_kwargs={'current_user': api.app.current_user}
+        resource_class_kwargs={'current_user': flask_jwt_extended.current_user}
     )
