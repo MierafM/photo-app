@@ -64,7 +64,7 @@ const post2HTML = post => {
                     
                     
                 </section>
-                <button class="${ post.current_user_bookmark_id ? 'marked' : 'unmarked' } iconBtn" data-postid="${post.id}" onclick="toggleBookmark(event)" aria-label="Bookmark" aria-checked="${ post.current_user_bookmark_id ? 'true' : 'false' }">
+                <button class="${ post.current_user_bookmark_id ? 'marked' : 'unmarked' } iconBtn" data-postid="${post.id}" data-bookmarkid=${post.current_user_bookmark_id} onclick="toggleBookmark(event)" aria-label="Bookmark" aria-checked="${ post.current_user_bookmark_id ? 'true' : 'false' }">
                     <i class="fa${ post.current_user_bookmark_id ? 's' : 'r' } fa-bookmark"></i>
                 </button>
             </section>
@@ -266,7 +266,7 @@ const comments2Html = (comment) => {
 
 }
 const displayPosts = () =>{
-    console.log('cookie:', getCookie('csrf_access_token'))
+    // console.log('cookie:', getCookie('csrf_access_token'))
     fetch('/api/posts', {
         method: "GET",
         headers: {
@@ -479,6 +479,7 @@ const updateLikes = (post) =>{
 /////////update bookmarks
 const toggleBookmark = (ev) =>{
     const elem = ev.currentTarget
+    console.log(elem.dataset)
     
     if (elem.getAttribute("class").includes("unmarked")){
         
@@ -501,12 +502,14 @@ const toggleBookmark = (ev) =>{
             elem.innerHTML = `<i class="fas fa-bookmark"></i>`
             
             elem.setAttribute('aria-checked',"true")
+            elem.dataset.bookmarkid=data.id
+            console.log('updated ds', elem.dataset)
 
         });
 
     }else if (elem.getAttribute("class").includes("marked")){
         
-        fetch("/api/bookmarks/"+elem.dataset.postid, {
+        fetch("/api/bookmarks/"+elem.dataset.bookmarkid, {
         method: "DELETE",
         headers: {
             'Content-Type': 'application/json',
@@ -520,6 +523,7 @@ const toggleBookmark = (ev) =>{
             elem.innerHTML = `<i class="far fa-bookmark"></i>`
             
             elem.setAttribute('aria-checked',"false")
+            // displayPosts();
 
 
         });
